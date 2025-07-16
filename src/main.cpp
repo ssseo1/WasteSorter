@@ -1,4 +1,8 @@
 #include <Arduino.h>
+#include <SoftwareSerial.h>
+#include <Servo.h>
+#include <ESP8266_Lib.h>
+#include <BlynkSimpleShieldEsp8266.h>
 
 // put function declarations here:
 int myFunction(int, int);
