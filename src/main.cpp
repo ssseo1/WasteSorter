@@ -1,22 +1,137 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <Servo.h>
-#include <ESP8266_Lib.h>
-#include <BlynkSimpleShieldEsp8266.h>
+// #include <ESP8266_Lib.h>
+// #include <BlynkSimpleShieldEsp8266.h>
 
-// put function declarations here:
-int myFunction(int, int);
+// servo positions
+#define LOW_LIM 10
+#define UPP_LIM 180
+#define TILT_LEFT 135
+#define TILT_RIGHT 45
+#define MIDDLE 94
+
+// for ultrasonics
+#define SPEED_OF_SOUND  0.0343 // cm/us
+
+//create servo object
+Servo platformServo;
+
+// ultrasonic range sensor signal pins
+const int trig_recycle = 3;
+const int echo_recycle = 2;
+const int trig_trash = 5;
+const int echo_trash = 4;
+
+// recycle distance is 16.45
+// trash distance is 24.66 - 25
+
+// FUNCTION DECLARATIONS:
+void rotateServo(int target);
+String getObjectID();
+float measureRecycle();
+float measureTrash();
+// python does its own initialization in the background and gets the next image based on serial input from arduino 
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  Serial.begin(115200); 
+
+  // initialize platform to middle position
+  rotateServo(MIDDLE);
+
+  // set pin I/O for ultrasonics
+  pinMode(trig_recycle, OUTPUT);
+  pinMode(trig_trash, OUTPUT);
+  pinMode(echo_recycle, INPUT);
+  pinMode(echo_trash, INPUT);
+
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+// function to slow down servo motion by commanding in increments with delays 
+void rotateServo(int target) {
+  // (re)initialize servo to pwm pin 9 bc this gets detached to stop motor hum
+  platformServo.attach(9);
+  // read starting servo position
+  int pos = platformServo.read();
+
+  // increment servo pos
+  if (target > pos) {
+    while (pos < target) {
+      pos = pos + 1;
+      platformServo.write(pos);
+      pos = platformServo.read();
+      delay(8);      // 8ms delay
+    }
+  }
+  // decrement servo pos
+  else if (target < pos) {
+    while (pos > target) {
+      pos = pos - 1;
+      platformServo.write(pos);
+      pos = platformServo.read();
+      delay(8);      // 8ms delay
+    }
+  }
+  // needed to hold the final position for a few ms before detaching
+  platformServo.write(pos);
+  delay(250);
+  platformServo.detach();
+  return;
+}
+
+// prompt Python script to take a picture and identify the object
+String getObjectID(){
+  // send a string to trigger Python function
+  Serial.println("IDENTIFY OBJECT");
+
+  // wait for Python to respond with the object name
+	while (!Serial.available()); 
+	return Serial.readString(); 
+}
+
+float measureRecycle() {
+  // set trig low for 2 us to ensure starting in low
+  digitalWrite(trig_recycle, LOW);
+  delayMicroseconds(2);
+
+  // set trigger high for 10 us, then low
+  digitalWrite(trig_recycle, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig_recycle, LOW);
+
+  // time how long it takes for echo to switch from high to low
+  float recycle_duration = pulseIn(echo_recycle, HIGH);
+
+  // divide by 2 for there and back
+  float recycle_distance = (recycle_duration*SPEED_OF_SOUND)/2;  
+
+  Serial.print("Recycle Dist: ");
+  Serial.println(recycle_distance);
+
+  return recycle_distance;
+}
+
+float measureTrash() {
+  // set trig low for 2 us to ensure starting in low
+  digitalWrite(trig_trash, LOW);
+  delayMicroseconds(2);
+
+  // set trigger high for 10 us, then low
+  digitalWrite(trig_trash, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig_trash, LOW);
+
+  // time how long it takes for echo to switch from high to low
+  float trash_duration = pulseIn(echo_trash, HIGH);
+
+  // divide by 2 for there and back
+  float trash_distance = (trash_duration*SPEED_OF_SOUND)/2;  
+
+  Serial.print("Trash Dist: ");
+  Serial.println(trash_distance);
+
+  return trash_distance;
 }
