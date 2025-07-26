@@ -13,6 +13,9 @@
 
 // for ultrasonics
 #define SPEED_OF_SOUND  0.0343 // cm/us
+#define TRASH_DIST 24.5
+#define RECYCLE_DIST 16.5
+#define DEVIATION_TOL 5
 
 //create servo object
 Servo platformServo;
@@ -23,12 +26,9 @@ const int echo_recycle = 2;
 const int trig_trash = 5;
 const int echo_trash = 4;
 
-// recycle distance is 16.45
-// trash distance is 24.66 - 25
-
 // FUNCTION DECLARATIONS:
 void rotateServo(int target);
-String getObjectID();
+int getObjectID();
 float measureRecycle();
 float measureTrash();
 // python does its own initialization in the background and gets the next image based on serial input from arduino 
@@ -47,8 +47,68 @@ void setup() {
 
 }
 
+//0 is bg, 1 is trash, 2 is recycling
 void loop() {
+  // wait until an object is placed and detected
+  // if(getObjectID() != 0) {  //0 is the ID for background/no object
+  //   delay(1000);
+  //   // take the capture again to ensure nothing else gets caught in frame
+  //   int objectID = getObjectID();
+
+    int objectID = 1;
+
+    Serial.println(objectID);
+    switch(objectID){
+      case 0:
+        break;
+      case 1: // trash
+        float trashSensor = measureTrash();
+        if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
+          Serial.println("TRASH FULL");
+          // send a message to the app
+        }
+        else {
+          rotateServo(TILT_RIGHT);
+          delay(100);   // settling time
+          rotateServo(MIDDLE);
+          delay(500);   // settling time
+          trashSensor = measureTrash();
+          if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
+            Serial.println("TRASH FULL");
+            // send a message to the app
+          }
+        }
+        break;
+      case 2: // recycle
+        float recycleSensor = measureRecycle();
+        if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
+          Serial.println("RECYCLE FULL");
+          // send a message to the app
+        }
+        else {
+          rotateServo(TILT_LEFT);
+          delay(100);   // settling time
+          rotateServo(MIDDLE);
+          delay(500);   // settling time
+          recycleSensor = measureRecycle();
+          if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
+            Serial.println("RECYCLE FULL");
+            // send a message to the app
+          }
+        }
+        break;
+      default:
+        // should never be reached
+        break;
+    }
+  // }
+  delay(100);
+
+
+  
+  delay(20000);
 }
+
 
 // function to slow down servo motion by commanding in increments with delays 
 void rotateServo(int target) {
@@ -83,13 +143,13 @@ void rotateServo(int target) {
 }
 
 // prompt Python script to take a picture and identify the object
-String getObjectID(){
+int getObjectID(){
   // send a string to trigger Python function
   Serial.println("IDENTIFY OBJECT");
 
   // wait for Python to respond with the object name
 	while (!Serial.available()); 
-	return Serial.readString(); 
+	return Serial.readString().toInt(); 
 }
 
 float measureRecycle() {
