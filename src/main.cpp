@@ -1,8 +1,24 @@
 #include <Arduino.h>
-#include <SoftwareSerial.h>
 #include <Servo.h>
-// #include <ESP8266_Lib.h>
-// #include <BlynkSimpleShieldEsp8266.h>
+
+// Blynk app info
+#define BLYNK_TEMPLATE_ID           "TMPL2CKx0CwnM"
+#define BLYNK_TEMPLATE_NAME         "Quickstart Template"
+#define BLYNK_AUTH_TOKEN            "OcGax-kct3Ktmzq3aTYigvyxSfFhxScR"
+#define BLYNK_PRINT Serial
+#define ESP8266_BAUD 115200
+
+#include <SoftwareSerial.h>
+#include <ESP8266_Lib.h>
+#include <BlynkSimpleShieldEsp8266.h>
+
+// wifi info
+char ssid[] = "Ampharos";
+char pass[] = "18015EAA86";
+
+SoftwareSerial EspSerial(6, 7); // RX, TX
+ESP8266 wifi(&EspSerial);
+BlynkTimer timer;
 
 // servo positions
 #define LOW_LIM 10
@@ -34,7 +50,12 @@ float measureTrash();
 // python does its own initialization in the background and gets the next image based on serial input from arduino 
 
 void setup() {
-  Serial.begin(115200); 
+  Serial.begin(115200);
+
+  // begin ESP8266-01 comms
+  EspSerial.begin(ESP8266_BAUD);
+  delay(10);
+  Blynk.begin(BLYNK_AUTH_TOKEN, wifi, ssid, pass, "blynk.cloud", 80);
 
   // initialize platform to middle position
   rotateServo(MIDDLE);
@@ -44,11 +65,11 @@ void setup() {
   pinMode(trig_trash, OUTPUT);
   pinMode(echo_recycle, INPUT);
   pinMode(echo_trash, INPUT);
-
 }
 
 //0 is bg, 1 is trash, 2 is recycling
 void loop() {
+  Blynk.run();
   // wait until an object is placed and detected
   // if(getObjectID() != 0) {  //0 is the ID for background/no object
   //   delay(1000);
@@ -65,7 +86,7 @@ void loop() {
         float trashSensor = measureTrash();
         if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
           Serial.println("TRASH FULL");
-          // send a message to the app
+          Blynk.logEvent("trash_bin_full");
         }
         else {
           rotateServo(TILT_RIGHT);
@@ -75,7 +96,7 @@ void loop() {
           trashSensor = measureTrash();
           if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
             Serial.println("TRASH FULL");
-            // send a message to the app
+            Blynk.logEvent("trash_bin_full");
           }
         }
         break;
@@ -83,7 +104,7 @@ void loop() {
         float recycleSensor = measureRecycle();
         if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
           Serial.println("RECYCLE FULL");
-          // send a message to the app
+          Blynk.logEvent("recycle_bin_full");
         }
         else {
           rotateServo(TILT_LEFT);
@@ -93,7 +114,7 @@ void loop() {
           recycleSensor = measureRecycle();
           if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
             Serial.println("RECYCLE FULL");
-            // send a message to the app
+            Blynk.logEvent("recycle_bin_full");
           }
         }
         break;
@@ -106,7 +127,7 @@ void loop() {
 
 
   
-  delay(20000);
+  delay(300000);
 }
 
 
