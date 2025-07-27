@@ -74,47 +74,49 @@ void loop() {
   // if(getObjectID() != 0) {  //0 is the ID for background/no object
   //   delay(1000);
   //   // take the capture again to ensure nothing else gets caught in frame
-  //   int objectID = getObjectID();
-
-    int objectID = 1;
+    int objectID = getObjectID();
 
     Serial.println(objectID);
     switch(objectID){
       case 0:
         break;
       case 1: // trash
-        float trashSensor = measureTrash();
-        if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
-          Serial.println("TRASH FULL");
-          Blynk.logEvent("trash_bin_full");
-        }
-        else {
-          rotateServo(TILT_RIGHT);
-          delay(100);   // settling time
-          rotateServo(MIDDLE);
-          delay(500);   // settling time
-          trashSensor = measureTrash();
+        { 
+          float trashSensor = measureTrash();
           if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
             Serial.println("TRASH FULL");
             Blynk.logEvent("trash_bin_full");
           }
+          else {
+            rotateServo(TILT_RIGHT);
+            delay(1500);   // settling time
+            rotateServo(MIDDLE);
+            delay(500);   // settling time
+            trashSensor = measureTrash();
+            if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
+              Serial.println("TRASH FULL");
+              Blynk.logEvent("trash_bin_full");
+            }
+          }
         }
         break;
       case 2: // recycle
-        float recycleSensor = measureRecycle();
-        if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
-          Serial.println("RECYCLE FULL");
-          Blynk.logEvent("recycle_bin_full");
-        }
-        else {
-          rotateServo(TILT_LEFT);
-          delay(100);   // settling time
-          rotateServo(MIDDLE);
-          delay(500);   // settling time
-          recycleSensor = measureRecycle();
+        {
+          float recycleSensor = measureRecycle();
           if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
             Serial.println("RECYCLE FULL");
             Blynk.logEvent("recycle_bin_full");
+          }
+          else {
+            rotateServo(TILT_LEFT);
+            delay(1500);   // settling time
+            rotateServo(MIDDLE);
+            delay(500);   // settling time
+            recycleSensor = measureRecycle();
+            if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
+              Serial.println("RECYCLE FULL");
+              Blynk.logEvent("recycle_bin_full");
+            }
           }
         }
         break;
@@ -127,7 +129,7 @@ void loop() {
 
 
   
-  delay(300000);
+  delay(10000);
 }
 
 
