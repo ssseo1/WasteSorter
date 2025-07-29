@@ -25,13 +25,13 @@ BlynkTimer timer;
 #define UPP_LIM 180
 #define TILT_LEFT 135
 #define TILT_RIGHT 45
-#define MIDDLE 94
+#define MIDDLE 93
 
 // for ultrasonics
 #define SPEED_OF_SOUND  0.0343 // cm/us
-#define TRASH_DIST 24.5
-#define RECYCLE_DIST 16.5
-#define DEVIATION_TOL 5
+#define TRASH_DIST 25
+#define RECYCLE_DIST 16.6
+#define DEVIATION_TOL 3
 
 //create servo object
 Servo platformServo;
@@ -53,9 +53,9 @@ void setup() {
   Serial.begin(115200);
 
   // begin ESP8266-01 comms
-  EspSerial.begin(ESP8266_BAUD);
-  delay(10);
-  Blynk.begin(BLYNK_AUTH_TOKEN, wifi, ssid, pass, "blynk.cloud", 80);
+  // EspSerial.begin(ESP8266_BAUD);
+  // delay(10);
+  // Blynk.begin(BLYNK_AUTH_TOKEN, wifi, ssid, pass, "blynk.cloud", 80);
 
   // initialize platform to middle position
   rotateServo(MIDDLE);
@@ -69,13 +69,9 @@ void setup() {
 
 //0 is bg, 1 is trash, 2 is recycling
 void loop() {
-  Blynk.run();
-  // wait until an object is placed and detected
-  // if(getObjectID() != 0) {  //0 is the ID for background/no object
-  //   delay(1000);
-  //   // take the capture again to ensure nothing else gets caught in frame
+  // Blynk.run();
+  // wait until an object is placed and detected -- call Python to do this
     int objectID = getObjectID();
-
     Serial.println(objectID);
     switch(objectID){
       case 0:
@@ -85,17 +81,17 @@ void loop() {
           float trashSensor = measureTrash();
           if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
             Serial.println("TRASH FULL");
-            Blynk.logEvent("trash_bin_full");
+            // Blynk.logEvent("trash_bin_full");
           }
           else {
             rotateServo(TILT_RIGHT);
             delay(1500);   // settling time
             rotateServo(MIDDLE);
-            delay(500);   // settling time
+            delay(1000);   // settling time
             trashSensor = measureTrash();
             if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
               Serial.println("TRASH FULL");
-              Blynk.logEvent("trash_bin_full");
+              // Blynk.logEvent("trash_bin_full");
             }
           }
         }
@@ -105,17 +101,17 @@ void loop() {
           float recycleSensor = measureRecycle();
           if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
             Serial.println("RECYCLE FULL");
-            Blynk.logEvent("recycle_bin_full");
+            // Blynk.logEvent("recycle_bin_full");
           }
           else {
             rotateServo(TILT_LEFT);
             delay(1500);   // settling time
             rotateServo(MIDDLE);
-            delay(500);   // settling time
+            delay(1000);   // settling time
             recycleSensor = measureRecycle();
             if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
               Serial.println("RECYCLE FULL");
-              Blynk.logEvent("recycle_bin_full");
+              // Blynk.logEvent("recycle_bin_full");
             }
           }
         }
@@ -124,12 +120,7 @@ void loop() {
         // should never be reached
         break;
     }
-  // }
-  delay(100);
-
-
-  
-  delay(10000);
+  delay(1000);
 }
 
 
@@ -160,7 +151,7 @@ void rotateServo(int target) {
   }
   // needed to hold the final position for a few ms before detaching
   platformServo.write(pos);
-  delay(250);
+  delay(300);
   platformServo.detach();
   return;
 }
@@ -171,8 +162,8 @@ int getObjectID(){
   Serial.println("IDENTIFY OBJECT");
 
   // wait for Python to respond with the object name
-	while (!Serial.available()); 
-	return Serial.readString().toInt(); 
+	while (!Serial.available());
+	return Serial.readString().toInt();
 }
 
 float measureRecycle() {
