@@ -69,7 +69,6 @@ void setup() {
 
 //0 is bg, 1 is trash, 2 is recycling
 void loop() {
-  Blynk.run();
   // wait until an object is placed and detected -- call Python to do this
     int objectID = getObjectID();
     Serial.println(objectID);
@@ -162,7 +161,9 @@ int getObjectID(){
   Serial.println("IDENTIFY OBJECT");
 
   // wait for Python to respond with the object name
-	while (!Serial.available());
+	while (!Serial.available()) {
+    Blynk.run(); // handshake with Blynk while waiting
+  }
 	return Serial.readString().toInt();
 }
 
