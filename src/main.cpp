@@ -18,7 +18,7 @@ char pass[] = "18015EAA86";
 
 SoftwareSerial EspSerial(6, 7); // RX, TX
 ESP8266 wifi(&EspSerial);
-BlynkTimer timer;
+// BlynkTimer timer;
 
 // servo positions
 #define LOW_LIM 10
@@ -69,16 +69,18 @@ void setup() {
 
 //0 is bg, 1 is trash, 2 is recycling
 void loop() {
-  // wait until an object is placed and detected -- call Python to do this
+    // wait until an object is placed and detected -- call Python to do this
     int objectID = getObjectID();
-    Serial.println(objectID);
+    // Serial.println(objectID);
     switch(objectID){
       case 0:
+        Serial.println("False alarm - Object not detected; do nothing.");
         break;
       case 1: // trash
         { 
+          Serial.println("Measuring trash pre deposit...");
           float trashSensor = measureTrash();
-          if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
+          if(trashSensor < (TRASH_DIST - DEVIATION_TOL) || trashSensor > (TRASH_DIST + DEVIATION_TOL)){
             Serial.println("TRASH FULL");
             Blynk.logEvent("trash_bin_full");
           }
@@ -87,8 +89,9 @@ void loop() {
             delay(1500);   // settling time
             rotateServo(MIDDLE);
             delay(500);   // settling time
+            Serial.println("Measuring trash post deposit...");
             trashSensor = measureTrash();
-            if(trashSensor < (TRASH_DIST - DEVIATION_TOL)){
+          if(trashSensor < (TRASH_DIST - DEVIATION_TOL) || trashSensor > (TRASH_DIST + DEVIATION_TOL)){
               Serial.println("TRASH FULL");
               Blynk.logEvent("trash_bin_full");
             }
@@ -97,8 +100,9 @@ void loop() {
         break;
       case 2: // recycle
         {
+          Serial.println("Measuring recycling pre deposit...");
           float recycleSensor = measureRecycle();
-          if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
+          if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL) || recycleSensor > (RECYCLE_DIST + DEVIATION_TOL)){
             Serial.println("RECYCLE FULL");
             Blynk.logEvent("recycle_bin_full");
           }
@@ -107,8 +111,9 @@ void loop() {
             delay(1500);   // settling time
             rotateServo(MIDDLE);
             delay(500);   // settling time
+            Serial.println("Measuring recycling post deposit...");
             recycleSensor = measureRecycle();
-            if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL)){
+          if(recycleSensor < (RECYCLE_DIST - DEVIATION_TOL) || recycleSensor > (RECYCLE_DIST + DEVIATION_TOL)){
               Serial.println("RECYCLE FULL");
               Blynk.logEvent("recycle_bin_full");
             }
