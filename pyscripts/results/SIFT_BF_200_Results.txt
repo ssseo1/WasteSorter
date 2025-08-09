@@ -1,0 +1,107 @@
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Object Accuracy: 6/6 correct, 100.0%
+
+Actual: bg, Prediction: bg
+Actual: bg, Prediction: tproll
+Actual: bg, Prediction: bg
+Actual: bg, Prediction: bg
+Actual: bg, Prediction: bg
+Actual: bg, Prediction: bg
+Object Accuracy: 5/6 correct, 83.33%
+
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Object Accuracy: 6/6 correct, 100.0%
+
+Actual: can, Prediction: can
+Actual: can, Prediction: can
+Actual: can, Prediction: soda
+Actual: can, Prediction: can
+Actual: can, Prediction: can
+Actual: can, Prediction: soda
+Object Accuracy: 4/6 correct, 66.67%
+
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Object Accuracy: 6/6 correct, 100.0%
+
+Actual: paper, Prediction: paper
+Actual: paper, Prediction: bg
+Actual: paper, Prediction: tproll
+Actual: paper, Prediction: paper
+Actual: paper, Prediction: paper
+Actual: paper, Prediction: paper
+Object Accuracy: 4/6 correct, 66.67%
+
+Actual: plasticbag, Prediction: plasticbag
+Actual: plasticbag, Prediction: plasticbag
+Actual: plasticbag, Prediction: plasticbag
+Actual: plasticbag, Prediction: plasticbag
+Actual: plasticbag, Prediction: plasticbag
+Actual: plasticbag, Prediction: napkin
+Object Accuracy: 5/6 correct, 83.33%
+
+Actual: sock, Prediction: sock
+Actual: sock, Prediction: sock
+Actual: sock, Prediction: sock
+Actual: sock, Prediction: sock
+Actual: sock, Prediction: sock
+Actual: sock, Prediction: sock
+Object Accuracy: 6/6 correct, 100.0%
+
+Actual: soda, Prediction: soda
+Actual: soda, Prediction: soda
+Actual: soda, Prediction: soda
+Actual: soda, Prediction: soda
+Actual: soda, Prediction: soda
+Actual: soda, Prediction: soda
+Object Accuracy: 6/6 correct, 100.0%
+
+Actual: styrofoam, Prediction: styrofoam
+Actual: styrofoam, Prediction: styrofoam
+Actual: styrofoam, Prediction: styrofoam
+Actual: styrofoam, Prediction: bg
+Actual: styrofoam, Prediction: styrofoam
+Actual: styrofoam, Prediction: styrofoam
+Object Accuracy: 5/6 correct, 83.33%
+
+Actual: sugarbox, Prediction: sugarbox
+Actual: sugarbox, Prediction: sugarbox
+Actual: sugarbox, Prediction: sugarbox
+Actual: sugarbox, Prediction: sugarbox
+Actual: sugarbox, Prediction: sugarbox
+Actual: sugarbox, Prediction: sugarbox
+Object Accuracy: 6/6 correct, 100.0%
+
+Actual: tproll, Prediction: tproll
+Actual: tproll, Prediction: can
+Actual: tproll, Prediction: tproll
+Actual: tproll, Prediction: tproll
+Actual: tproll, Prediction: tproll
+Actual: tproll, Prediction: tproll
+Object Accuracy: 5/6 correct, 83.33%
+
+Actual: wrapper, Prediction: wrapper
+Actual: wrapper, Prediction: wrapper
+Actual: wrapper, Prediction: wrapper
+Actual: wrapper, Prediction: wrapper
+Actual: wrapper, Prediction: wrapper
+Actual: wrapper, Prediction: wrapper
+Object Accuracy: 6/6 correct, 100.0%
+
+
+
+Overall Accuracy: 70/78 correct, 89.74%

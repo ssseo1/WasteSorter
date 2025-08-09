@@ -1,0 +1,44 @@
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Actual: banana, Prediction: banana
+Object Accuracy: 6/6 correct, 100.0%
+
+Actual: bg, Prediction: bg
+Actual: bg, Prediction: tproll
+Actual: bg, Prediction: bg
+Actual: bg, Prediction: bg
+Actual: bg, Prediction: bg
+Actual: bg, Prediction: bg
+Object Accuracy: 5/6 correct, 83.33%
+
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Actual: bottle, Prediction: bottle
+Object Accuracy: 6/6 correct, 100.0%
+
+Actual: can, Prediction: can
+Actual: can, Prediction: can
+Actual: can, Prediction: soda
+Actual: can, Prediction: soda
+Actual: can, Prediction: can
+Actual: can, Prediction: soda
+Object Accuracy: 3/6 correct, 50.0%
+
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Actual: napkin, Prediction: napkin
+Object Accuracy: 6/6 correct, 100.0%
+
+Actual: paper, Prediction: bg
+Actual: paper, Prediction: bg
+Actual: paper, Prediction: banana
+Actual: paper, Prediction: paper
